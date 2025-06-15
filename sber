@@ -1,19 +1,57 @@
 <!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"><title>СБП перевод через Сбер</title></head>
+<head>
+  <meta charset="UTF-8">
+  <title>Генератор QR для Сбера</title>
+  <style>
+    body { font-family: sans-serif; padding: 2em; background: #f4f4f4; }
+    input, button { font-size: 16px; padding: 0.4em; margin: 0.2em; width: 100%; max-width: 400px; }
+    #qr { margin-top: 20px; }
+  </style>
+</head>
 <body>
-<script>
-  const p = new URLSearchParams(window.location.search);
-  const phone = p.get("phone");
-  if (!phone) {
-    document.body.innerText = "Ошибка: phone? Не указан.";
-  } else {
-    let url = `sbol://send?phone=${phone}`;
-    if (p.get("amount")) url += `&amount=${p.get("amount")}`;
-    if (p.get("comment")) url += `&comment=${encodeURIComponent(p.get("comment"))}`;
-    window.location.href = url;
-    setTimeout(() => document.body.innerHTML = `<p>Если не открылось — <a href="${url}">Нажмите здесь для запуска</a>.</p>`, 2000);
-  }
-</script>
+
+  <h2>Генератор QR‑ссылки для перевода в Сбербанк</h2>
+
+  <input id="phone" placeholder="Номер получателя (79...)" />
+  <input id="amount" placeholder="Сумма (например, 1000)" />
+  <input id="comment" placeholder="Комментарий (необязательно)" />
+  <button onclick="generate()">Создать ссылку и QR</button>
+
+  <p id="result-link"></p>
+  <div id="qr"></div>
+  <button id="download" style="display:none;" onclick="downloadQR()">Скачать QR</button>
+
+  <script>
+    function generate() {
+      const phone = document.getElementById("phone").value.trim();
+      const amount = document.getElementById("amount").value.trim();
+      const comment = document.getElementById("comment").value.trim();
+
+      if (!phone) {
+        alert("Введите номер телефона получателя");
+        return;
+      }
+
+      const base = "https://gospodinboss.github.io/sber-sbp-deeplink/";
+      let url = base + "?phone=" + phone;
+      if (amount) url += "&amount=" + amount;
+      if (comment) url += "&comment=" + encodeURIComponent(comment);
+
+      document.getElementById("result-link").innerHTML = `<b>Ссылка:</b> <a href="${url}" target="_blank">${url}</a>`;
+      const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(url);
+      document.getElementById("qr").innerHTML = `<img id="qr-img" src="${qrUrl}" alt="QR Code" />`;
+      document.getElementById("download").style.display = "inline-block";
+    }
+
+    function downloadQR() {
+      const img = document.getElementById("qr-img");
+      const a = document.createElement("a");
+      a.href = img.src;
+      a.download = "qr_sber.png";
+      a.click();
+    }
+  </script>
+
 </body>
 </html>
