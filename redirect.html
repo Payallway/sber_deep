@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Перевод через СБП</title>
+  <script>
+    window.onload = () => {
+      const p = new URLSearchParams(window.location.search);
+      const phone = p.get("phone");
+      if (!phone) {
+        document.body.innerText = "Ошибка: не указан номер";
+        return;
+      }
+      let url = `sbol://send?phone=${phone}`;
+      if (p.get("amount")) url += `&amount=${p.get("amount")}`;
+      if (p.get("comment")) url += `&comment=${encodeURIComponent(p.get("comment"))}`;
+      window.location.href = url;
+      setTimeout(() => {
+        document.body.innerHTML = `Не открылось? <a href="${url}">Нажми сюда</a>`;
+      }, 2000);
+    };
+  </script>
+</head>
+<body>Открываем Сбер...</body>
+</html>
