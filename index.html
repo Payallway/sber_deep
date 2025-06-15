@@ -4,23 +4,32 @@
   <meta charset="UTF-8">
   <title>Генератор QR для Сбера</title>
   <style>
-    body { font-family: sans-serif; padding: 2em; background: #f4f4f4; }
-    input, button { font-size: 16px; padding: 0.4em; margin: 0.2em; width: 100%; max-width: 400px; }
+    body { font-family: sans-serif; padding: 2em; background: #f9f9f9; }
+    input, button { font-size: 16px; padding: 0.5em; margin: 0.3em; width: 100%; max-width: 400px; display: block; }
     #qr { margin-top: 20px; }
+    #qr img { border: 1px solid #ccc; padding: 10px; background: white; }
+    .container { max-width: 600px; margin: auto; }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Генератор QR-ссылки на перевод в Сбербанк</h2>
 
-  <h2>Генератор QR‑ссылки для перевода в Сбербанк</h2>
+    <label>Номер получателя (79...)</label>
+    <input id="phone" placeholder="7960..." />
 
-  <input id="phone" placeholder="Номер получателя (79...)" />
-  <input id="amount" placeholder="Сумма (например, 1000)" />
-  <input id="comment" placeholder="Комментарий (необязательно)" />
-  <button onclick="generate()">Создать ссылку и QR</button>
+    <label>Сумма (опционально)</label>
+    <input id="amount" placeholder="1000" />
 
-  <p id="result-link"></p>
-  <div id="qr"></div>
-  <button id="download" style="display:none;" onclick="downloadQR()">Скачать QR</button>
+    <label>Комментарий (опционально)</label>
+    <input id="comment" placeholder="Например: За пиццу" />
+
+    <button onclick="generate()">Создать ссылку и QR</button>
+
+    <p id="result-link"></p>
+    <div id="qr"></div>
+    <button id="download" style="display:none;" onclick="downloadQR()">Скачать QR</button>
+  </div>
 
   <script>
     function generate() {
@@ -33,7 +42,7 @@
         return;
       }
 
-      const base = "https://payallway.github.io/sber_deep/";
+      const base = "https://payallway.github.io/sber_deep/redirect.html";
       let url = base + "?phone=" + phone;
       if (amount) url += "&amount=" + amount;
       if (comment) url += "&comment=" + encodeURIComponent(comment);
@@ -52,6 +61,5 @@
       a.click();
     }
   </script>
-
 </body>
 </html>
